@@ -1,0 +1,40 @@
+version: '3.8' # Specify a version for docker-compose
+
+services:
+  mysqldb:
+    image: 'mysql:latest'
+    environment:
+      - MYSQL_ROOT_PASSWORD=root
+      - MYSQL_DATABASE=dockerMySql
+    container_name: mysqldb
+    networks:
+      - my-net
+    healthcheck:
+      test: [ 'CMD', 'mysqladmin', 'ping', '-h', 'localhost' ]
+      timeout: 20s
+      retries: 10
+
+  myjavaapp:
+    build: ./
+    container_name: emp
+    networks:
+      - my-net
+    volumes:
+      - ./employees.txt:/myapp/employees.txt
+    depends_on:
+      - mysqldb
+    stdin_open: true
+    tty: true
+    entrypoint:
+      [
+        "./wait-for-it.sh",
+        "mysqldb:3306",
+        "--",
+        "java",
+        "-cp",
+        "lib/mysql-connector-j-8.4.0.jar:bin",
+        "EmployeeManager"
+      ]
+
+networks:
+  my-net:

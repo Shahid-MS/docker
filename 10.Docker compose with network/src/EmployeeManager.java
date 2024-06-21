@@ -8,8 +8,7 @@ import java.util.Scanner;
 public class EmployeeManager {
 
   // JDBC URL, username, and password of MySQL server
-  private static final String JDBC_URL =
-    "jdbc:mysql://localhost:3306/dockerMySql";
+  private static final String JDBC_URL = "jdbc:mysql://mysqldb:3306/dockerMySql";
   private static final String JDBC_USER = "root";
   private static final String JDBC_PASSWORD = "root";
 

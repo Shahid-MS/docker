@@ -1,3 +1,6 @@
+import java.io.BufferedWriter;
+import java.io.FileWriter;
+import java.io.IOException;
 import java.sql.Connection;
 import java.sql.DriverManager;
 import java.sql.ResultSet;
@@ -9,9 +12,11 @@ public class EmployeeManager {
 
   // JDBC URL, username, and password of MySQL server
   private static final String JDBC_URL =
-    "jdbc:mysql://localhost:3306/dockerMySql";
+    "jdbc:mysql://mysqldb:3306/dockerMySql";
   private static final String JDBC_USER = "root";
   private static final String JDBC_PASSWORD = "root";
+  private static final String FILENAME = "/myapp/employees.txt";
+
 
   public static void main(String[] args) {
     Scanner scanner = new Scanner(System.in);
@@ -67,6 +72,8 @@ public class EmployeeManager {
     }
   }
 
+  
+
   private static void createEmployeeTable(Statement stmt) throws SQLException {
     String sql =
       "CREATE TABLE IF NOT EXISTS employee (" +
@@ -80,7 +87,21 @@ public class EmployeeManager {
     throws SQLException {
     String sql = "INSERT INTO employee (name) VALUES ('" + name + "')";
     stmt.executeUpdate(sql);
+    appendEmployeeToFile(name);
     System.out.println("Employee added successfully.");
+  }
+
+  private static void appendEmployeeToFile(String name) {
+    try (
+      BufferedWriter writer = new BufferedWriter(new FileWriter(FILENAME, true))
+    ) {
+      writer.write(name);
+      writer.newLine();
+      System.out.println("Employee name saved to file successfully.");
+    } catch (IOException e) {
+      System.out.println("An error occurred while writing to the file.");
+      e.printStackTrace();
+    }
   }
 
   private static void showEmployees(Statement stmt) throws SQLException {

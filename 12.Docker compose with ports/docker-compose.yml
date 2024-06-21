@@ -1,0 +1,8 @@
+version: '3.8'
+
+services:
+  mywebapp:
+    build: ./
+    ports:
+      - "8080:5173"
+    container_name: mywebapp
